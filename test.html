@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Rotating Text</title>
+  <style>
+    body {
+      background: #181c24;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    .hero-content {
+      text-align: left;
+      max-width: 600px;
+    }
+    .rotating-text {
+      position: relative;
+      height: 1.5em;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .rotating-text .text {
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      animation: rotateText 6s linear infinite;
+    }
+    .rotating-text .text:nth-child(1) { animation-delay: 0s; }
+    .rotating-text .text:nth-child(2) { animation-delay: 2s; }
+    .rotating-text .text:nth-child(3) { animation-delay: 4s; }
+    @keyframes rotateText {
+      0% { opacity: 0; transform: translateY(100%); }
+      8% { opacity: 1; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(0); }
+      38% { opacity: 0; transform: translateY(-100%); }
+      100% { opacity: 0; }
+    }
+    .launch-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background: linear-gradient(90deg, #00b0f0, #0077c2);
+      color: #fff;
+      border-radius: 25px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-content">
+    <h1>ECOTRACK</h1>
+    <div class="rotating-text">
+      <span class="text">First text rotates</span>
+      <span class="text">Second rotating text</span>
+      <span class="text">Third line here</span>
+    </div>
+    <a href="#" class="launch-button">LAUNCH DASHBOARD</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,502 @@
+/* style.css */
+
+/* --- Base Layout for Full Screen --- */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background-color: #1a1a2e;
+    color: #ffffff;
+    height: 100%; /* Essential for html and body to take full viewport height */
+    overflow: hidden; /* Prevent default browser scrollbars */
+    width: 100%; /* Ensure html and body take full viewport width */
+}
+
+.container {
+    display: flex;
+    flex-direction: column; /* Stacks header and main vertically */
+    height: 100vh; /* Make container take full viewport height */
+    width: 100vw; /* Make container take full viewport width */
+    max-width: 100%; /* Ensure it doesn't exceed 100% */
+}
+
+/* --- Header Styles --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(6,18,43,255); /* Slightly transparent background for header */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%; /* Ensure header spans full width */
+    z-index: 1000; /* Ensure header is above other content */
+    box-sizing: border-box; /* Include padding in width */
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.logo-placeholder {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #fff;
+}
+.logo-placeholder span {
+    font-weight: 300;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+nav a:hover,
+nav a.active {
+    color: #FFF287; /* Accent color for active/hover */
+}
+
+.main-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(6,18,43,255);
+  padding: 18px 40px 18px 40px;
+  position: relative;
+  z-index: 1000;
+  box-shadow: none;
+}
+
+.main-navbar nav {
+  display: flex;
+  gap: 36px;
+}
+
+.main-navbar nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.08rem;
+  font-weight: 600;
+  padding-bottom: 4px;
+  border-bottom: 2.5px solid transparent;
+  transition: color 0.2s, border-bottom 0.2s;
+}
+
+.main-navbar nav a.active, .main-navbar nav a:hover {
+  color: #FFF287;
+  border-bottom: 2.5px solid #FFF287;
+}
+
+/* --- Main Content Area (Sidebar + Map) --- */
+main {
+    display: flex; /* Arranges sidebar and map content horizontally */
+    flex-grow: 1; /* Allows main content to fill remaining vertical space */
+    width: 100%; /* Ensures main takes full width */
+    overflow: hidden; /* Important to contain map if it tries to overflow */
+}
+
+/* --- Sidebar Styles --- */
+.sidebar {
+    width: 300px; /* Fixed width for the sidebar */
+    background-color: #2a2a44; /* Darker background for sidebar */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width */
+    display: flex;
+    flex-direction: column; /* Stacks sidebar items vertically */
+    gap: 20px;
+    height: 100%; /* Sidebar takes full height of its parent (main) */
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
+    overflow-y: auto; /* Allow scrolling if content is too long */
+}
+
+.sidebar-section {
+    background-color: #3a3a5e;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-section h3 {
+    margin: 0 0 15px 0;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 8px;
+}
+
+.LC-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
+    padding-left: 8px;
+}
+
+.checkbox-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #00b0f0;
+}
+
+.checkbox-item label {
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    flex-grow: 1;
+    user-select: none;
+}
+
+.info-panel {
+    color: #e0e0e0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.info-panel p {
+    margin: 8px 0;
+}
+
+.info-panel strong {
+    color: #00b0f0;
+}
+
+/* --- Map Content Area Styles --- */
+.map-content {
+    flex-grow: 1; /* Allows map content to fill all remaining horizontal space */
+    display: flex;
+    flex-direction: column; /* Stacks header, map, and legend vertically */
+    height: 100%; /* Map content takes full height of its parent (main) */
+    position: relative; /* For absolute positioning of elements */
+    background-color: #ffffff; /* Background for map area */
+}
+
+.map-header {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+    color: #333;
+}
+
+.map-header h2 {
+    margin: 0 0 5px 0;
+    font-size: 20px;
+    color: #2a2a44;
+}
+
+.map-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Specific styles for Mapbox GL JS map container */
+.map-container {
+    flex-grow: 1; /* Allows the map container to fill available vertical space */
+    width: 100%; /* Ensures the map container fills horizontal space */
+    position: relative; /* Important for absolute positioning of inner map divs */
+}
+
+/* --- Map Legend Styles --- */
+.map-legend {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 15px 20px;
+    color: #333;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.map-legend h4 {
+    margin: 0 0 0px 0;
+    font-size: 16px;
+    color: #2a2a44;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 5px;
+}
+
+#LCLegendItems {
+    font-size: 13px;
+    line-height: 1.4;
+    padding-left: 0;
+    text-align: left;
+}
+
+#LCLegendItems div {
+    /* margin: 5px 0; */
+    display: flex;
+    align-items: left;
+    margin: 0;
+    padding: 0;
+}
+
+#LCLegendItems span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+}
+
+/* --- Loading Message Styles --- */
+#loadingMessageAdmin {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    header {
+        padding: 10px 15px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    nav {
+        display: flex;
+        gap: 15px;
+    }
+
+    nav a {
+        margin-left: 0;
+        font-size: 14px;
+    }
+
+    .user-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    main {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+        order: 2;
+    }
+
+    .map-content {
+        order: 1;
+        height: calc(100vh - 200px);
+    }
+
+    .LC-checklist {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .checkbox-item {
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        max-height: 150px;
+    }
+
+    .map-content {
+        height: calc(100vh - 150px);
+    }
+
+    .LC-checklist {
+        flex-direction: column;
+    }
+
+    .checkbox-item {
+        min-width: auto;
+    }
+}
+
+.legend-landcover-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: 0;
+    padding-left: 0;
+    align-items: flex-start;
+}
+.legend-landcover-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+    word-wrap: break-word;
+    margin:0;
+    padding: 0;
+}
+.legend-landcover-color {
+    width: 22px;
+    height: 22px;
+    display: inline-block;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin: 0;
+    padding-left: 0;
+}
+.legend-landcover-label {
+    border: none !important;
+    font-size: 14px;
+    white-space: nowrap;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    /* background-color: transparent !important; */
+    
+}
+
+/* Dropdown Land Cover 2018 - UI improvement */
+.dropdown {
+  position: relative;
+}
+.dropdown-toggle{
+    all: unset; /* Reset semua gaya default browser */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    font-size: 16px;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%; /* supaya rata dengan container */
+    transition: background-color 0.3s ease;
+    
+}
+.dropdown-toggle label{
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  flex-grow: 1;
+  user-select: none;
+  
+}
+
+.dropdown-list {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 8px;
+  margin-left: 0;
+  background: #23233a;
+  border-radius: 8px;
+  padding: 12px 0 12px 0;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.13);
+  min-width: 170px;
+  z-index: 10;
+  border: 1px solid #35355a;
+  transition: box-shadow 0.2s;
+}
+.dropdown-list.show {
+  display: block;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+.dropdown > label {
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  padding: 6px 0 6px 0;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.dropdown > label:hover {
+  background: #35355a;
+}
+.dropdown-arrow {
+  font-size: 18px;
+  color: #ecf000;
+  margin-left: 0px;
+  transition: transform 0.2s;
+}
+
+.dropdown-arrow.rotate {
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
+.dropdown-list .checkbox-item {
+  margin-bottom: 10px;
+  padding: 4px 0 4px 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.dropdown-list .checkbox-item:last-child {
+  margin-bottom: 0;
+}
+.dropdown-list .checkbox-item:hover {
+  background: #35355a;
+}
+.dropdown-list .checkbox-item label {
+  font-size: 15px;
+  color: #fff;
+  margin-left: 8px;
+}
+@media (max-width: 600px) {
+  .dropdown-list {
+    min-width: 120px;
+    padding: 8px 0 8px 0;
+  }
+  .dropdown > label {
+    font-size: 15px;
+  }
+}
+
+
+
+@media (max-width: 900px) {
+  .main-navbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 10px;
+  }
+  .main-navbar nav {
+    gap: 18px;
+  }
+  .logo-placeholder {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-navbar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 2vw;
+  }
+  .main-navbar nav {
+    gap: 10px;
+  }
+  .logo-placeholder {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,270 @@
+/* style.css */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Latar belakang abu-abu muda untuk keseluruhan halaman */
+    color: #333;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #4a4a4a; /* Abu-abu gelap untuk header */
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.logo-placeholder {
+    width: 120px;
+    height: 40px;
+    background-color: #777; /* Placeholder abu-abu untuk logo */
+    border: 1px solid #999;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+nav a.active {
+    color: #f0c040; /* Warna kuning untuk item menu aktif */
+}
+
+main {
+    display: flex;
+    flex-grow: 1; /* Membuat main content mengisi sisa tinggi */
+
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #636363; /* Abu-abu sedikit lebih terang untuk sidebar */
+    padding-top: 20px;
+}
+
+.sidebar-item {
+    padding: 18px 25px;
+    color: white;
+    font-size: 0.9em;
+    cursor: pointer;
+    border-bottom: 1px solid #505050; /* Garis pemisah antar item */
+}
+
+.sidebar-item:last-child {
+    border-bottom: none;
+}
+
+.sidebar-item.active-sidebar-item {
+    background-color: #ffffff; /* Putih untuk item sidebar aktif */
+    color: #333; /* Teks gelap untuk item sidebar aktif */
+    font-weight: bold;
+}
+
+.map-content {
+        /* height: 100vh; */
+    display: flex;
+    flex-grow: 1;
+    background-color: #ffffff; /* Latar belakang putih untuk area peta */
+}
+
+.map-view {
+    /* height: 100vh; */
+    flex: 1;
+    padding: 0px;
+    position: relative; /* Untuk positioning absolut elemen di dalamnya */
+    border-left: 1px solid #e0e0e0; /* Garis pemisah tipis antar peta */
+    display: flex;
+    flex-direction: column; /* Agar legenda bisa di bawah peta */
+    align-items: center; /* Pusatkan konten secara horizontal */
+}
+
+.map-view:first-child {
+    border-left: none;
+}
+
+.year-tabs {
+    z-index: 2;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.year-tabs-right {
+    left: auto;
+    right: 10px;
+}
+
+.year-tab {
+    background-color: #d8d8d8; /* Abu-abu muda untuk tab tahun */
+    border: 1px solid #bfbfbf;
+    padding: 5px 10px;
+    font-size: 0.75em;
+    cursor: pointer;
+    color: #555;
+}
+
+.year-tab.active-year-tab {
+    background-color: #bababa; /* Abu-abu sedikit lebih gelap untuk tab tahun aktif */
+    color: #333;
+    font-weight: bold;
+}
+
+.map-image {
+    width: 90%; /* Lebar peta agar responsif di dalam kontainernya */
+    max-width: 100%; /* Pastikan tidak melebihi kontainer */
+    height: auto;
+    margin-top: 50px; /* Beri ruang untuk year tabs */
+    margin-bottom: 20px; /* Beri ruang untuk legenda */
+    object-fit: contain; /* Agar gambar peta tidak terdistorsi */
+}
+
+.map-controls {
+    position: absolute;
+    top: 50%;
+    right: 0; /* Panah di kanan untuk peta kiri */
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50% 0 0 50%; /* Bentuk panah */
+    padding: 10px 5px 10px 8px;
+}
+
+.map-controls-right {
+    left: 0; /* Panah di kiri untuk peta kanan */
+    right: auto;
+    border-radius: 0 50% 50% 0; /* Bentuk panah */
+    padding: 10px 8px 10px 5px;
+}
+
+.nav-arrow {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+
+
+
+
+
+/* Konten Map */
+.map-content {
+    flex: 1;
+    /* padding: 15px; */
+    background-color: #ffffff;
+}
+
+/* Panel Map */
+.map-view {
+    margin-top: 0px;
+}
+
+.hidden-panel {
+    display: none !important;
+}
+
+/* Loading Message */
+#loadingMessageAdmin {
+    text-align: center;
+    padding: 10px;
+    font-style: italic;
+    color: #555;
+}
+
+/* Peta */
+.map-container {
+    height: 90vh;
+    width: 100%;
+    /* border: 1px solid #ccc; */
+    /* margin-top: 10px;
+    margin-bottom: 10px; */
+}
+
+/* Tab Tahun */
+/* .year-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.year-tab {
+    padding: 8px 12px;
+    border: 1px solid #007acc;
+    background-color: #f2f9ff;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.year-tab:hover {
+    background-color: #d8efff;
+}
+
+.active-year-tab {
+    background-color: #007acc;
+    color: white;
+    font-weight: bold;
+} */
+
+/* Mapbox Compare Container */
+#mapCompareContainer {
+    position: relative;
+    height: 90vh;
+    width: 100%;
+    /* margin-top: 10vh; */
+}
+
+#mapCompareContainer .map {
+    position: absolute;
+    top: 0px;
+    padding: 0;
+    bottom: 0;
+    height: 90vh;
+    width: 100%;
+}
+
+/* Legenda */
+/* .legenda {
+    background-color: #f8f8f8;
+    padding: 10px;
+    margin-top: 10px;
+    border-left: 5px solid #007acc;
+    font-size: 14px;
+    color: #333;
+} */
+
+/* Responsif */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .map-container, #mapCompareContainer {
+    position: absolute;
+    top: 0px;
+    padding: 0;
+    bottom: 0;
+    height: 90vh;
+    width: 100%;
+    }
+}

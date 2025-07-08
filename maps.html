@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ecotrack</title>
+    <link rel="stylesheet" href="css/maps.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+    <!-- Library untuk membaca file ZIP dan Shapefile -->
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="main-navbar">
+            <div class="logo-placeholder">ECO<span>TRACK</span></div>
+            <nav>
+                <a href="index.html">HOME</a>
+                <a href="maps.html" class="active">MAPS</a>
+                <a href="restoration.html">DASHBOARD</a>
+            </nav>
+        </header>
+        <main>
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Land Cover Each Year</h3>
+                    <div class="LC-checklist">
+                        <div class="checkbox-item dropdown">
+                            <button type="button" class="dropdown-toggle" onclick="document.getElementById('dropdown-landcover-2018-list').classList.toggle('show');" style="display:flex;align-items:center;gap:6px;"/>
+                            <label for="dropdown-landcover-2018" style="display:flex;align-items:center;gap:6px;">
+                                <span class="dropdown-arrow">&#9654;</span>
+                                <span> Land Cover 2018</span>
+                            </label>
+                            <div id="dropdown-landcover-2018-list" class="dropdown-list">
+                                <div style="font-size:13px;color:#bbb;margin-bottom:6px;margin-left:2px;">Pilih area untuk menampilkan data Land Cover:</div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2018-jambi" /><label for="checkbox-lc2018-jambi">Jambi</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2018-kalbar" /><label for="checkbox-lc2018-kalbar">Kalbar</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2018-kaltim" /><label for="checkbox-lc2018-kaltim">Kaltim</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2018-muba" /><label for="checkbox-lc2018-muba">Muba</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2018-oki" /><label for="checkbox-lc2018-oki">Oki</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2018-riau" /><label for="checkbox-lc2018-riau">Riau</label></div>
+                            </div>
+                        </div>
+                        <div class="checkbox-item dropdown">
+                            <button type="button" class="dropdown-toggle" onclick="document.getElementById('dropdown-landcover-2019-list').classList.toggle('show');" />
+                            <label for="dropdown-landcover-2019" style="display:flex;align-items:center;gap:6px;">
+                                <span class="dropdown-arrow">&#9654;</span>
+                                <span> Land Cover 2019</span>
+                            </label>
+                            <div id="dropdown-landcover-2019-list" class="dropdown-list">
+                                <div style="font-size:13px;color:#bbb;margin-bottom:6px;margin-left:2px;">Pilih area untuk menampilkan data Land Cover:</div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2019-jambi" /><label for="checkbox-lc2019-jambi">Jambi</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2019-kalbar" /><label for="checkbox-lc2019-kalbar">Kalimantan Barat</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2019-kaltim" /><label for="checkbox-lc2019-kaltim">Kalimantan Timur</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2019-muba" /><label for="checkbox-lc2019-muba">Muba</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2019-oki" /><label for="checkbox-lc2019-oki">Oki</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2019-riau" /><label for="checkbox-lc2019-riau">Riau</label></div>
+                            </div>
+                        </div>
+                        <div class="checkbox-item dropdown">
+                            <button type="button" class="dropdown-toggle"onclick="document.getElementById('dropdown-landcover-2021-list').classList.toggle('show');" />
+                            <label for="dropdown-landcover-2021" style="display:flex;align-items:center;gap:6px;">
+                                <span class="dropdown-arrow">&#9654;</span>
+                                <span> Land Cover 2021</span>
+                            </label>
+                            <div id="dropdown-landcover-2021-list" class="dropdown-list">
+                                <div style="font-size:13px;color:#bbb;margin-bottom:6px;margin-left:2px;">Pilih area untuk menampilkan data Land Cover:</div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2021-jambi" /><label for="checkbox-lc2021-jambi">Jambi</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2021-kalbar" /><label for="checkbox-lc2021-kalbar">Kalimantan Barat</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2021-kaltim" /><label for="checkbox-lc2021-kaltim">Kalimantan Timur</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2021-muba" /><label for="checkbox-lc2021-muba">Muba</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2021-oki" /><label for="checkbox-lc2021oki">Oki</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2021-riau" /><label for="checkbox-lc2021-riau">Riau</label></div>
+                            </div>
+                        </div>
+                        <div class="checkbox-item dropdown">
+                            <button type="button"class="dropdown-toggle" onclick="document.getElementById('dropdown-landcover-2023-list').classList.toggle('show');" />
+                            <label for="dropdown-landcover-2023" style="display:flex;align-items:center;gap:6px;">
+                                <span class="dropdown-arrow">&#9654;</span>
+                                <span> Land Cover 2023</span>
+                            </label>
+                            <div id="dropdown-landcover-2023-list" class="dropdown-list">
+                                <div style="font-size:13px;color:#bbb;margin-bottom:6px;margin-left:2px;">Pilih area untuk menampilkan data Land Cover:</div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2023-jambi" /><label for="checkbox-lc2023-jambi">Jambi</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2023-kalbar" /><label for="checkbox-lc2023-kalbar">Kalimantan Barat</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2023-kaltim" /><label for="checkbox-lc2023-kaltim">Kalimantan Timur</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2023-muba" /><label for="checkbox-lc2023-muba">Muba</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2023-oki" /><label for="checkbox-lc2023-oki">Oki</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="checkbox-lc2023-riau" /><label for="checkbox-lc2023-riau">Riau</label></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <h4>Legend</h4>
+                    <div id="LCLegendItems">
+                        <div style="text-align: center; color: #666;">
+                            Pilih data land cover yang akan ditampilkan
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <section class="map-content">
+                <!-- <div class="map-header">
+                    <h2>Peta Data Emission & Land Cover Indonesia</h2>
+                    <p>Pilih data emission atau land cover yang ingin ditampilkan menggunakan checklist di sidebar. Data diambil dari file GeoJSON dan ZIP (Shapefile).</p>
+                </div> -->
+                <div id="loadingMessageAdmin" style="display: none; text-align: center; padding: 10px; background: #fff3cd; margin: 10px 0; border-radius: 4px;">
+                    Memuat data batas administrasi...
+                </div>
+                <div id="loadingMessageEmission" style="display: none; text-align: center; padding: 10px; background: #d1ecf1; margin: 10px 0; border-radius: 4px;">
+                    Memuat data emission dari ZIP file...
+                </div>
+                <div id="mapContainer" class="map-container"></div>
+            </section>
+        </main>
+    </div>
+   
+    <script src="scripts/maps.js"></script>
+    <style>
+    .dropdown-list { display: none; margin-left: 10px; background: #23233a; border-radius: 6px; padding: 8px 0; }
+    .dropdown-list.show { display: block; }
+    .dropdown > label { cursor: pointer; }
+    </style>
+</body>
+
+</html>

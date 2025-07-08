@@ -1,0 +1,240 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(120deg, rgba(0, 176, 240, 0.678), rgba(1, 100, 167, 0.9)),
+    url('https://www.transparenttextures.com/patterns/cubes.png') repeat;;
+    background-blend-mode: overlay;
+    color: #130909;
+    line-height: 1.6;
+    font-size: 16px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+
+  .container {
+    width: 100%; /* Make container take full width */
+    max-width: 1400px; /* Limit content width for readability on large screens */
+    display: flex;
+    flex-direction: column;
+    /* No need for height: 100vh here if body is flex and container is its child and expands */
+    /* Min-height: 100vh might still be useful if content is very short */
+    min-height: 100vh;
+}
+
+/* --- Header Styles --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: rgb(0, 0, 0);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed; /* Keep fixed position for header */
+    width: 100%; /* Initially full width of the viewport */
+    z-index: 1000;
+    box-sizing: border-box;
+    left: 50%; /* Center the header */
+    transform: translateX(-50%); /* Adjust for its own width */
+    /* Apply max-width here so it matches the container's max-width logic */
+    max-width: 1400px; /* Match container max-width */
+}
+
+
+.logo-placeholder {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #fff;
+}
+.logo-placeholder span {
+    font-weight: 300;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 30px;
+    font-weight: bold;
+    font-size: 16px; 
+    transition: color 0.3s ease;
+}
+
+nav a:hover,
+nav a.active {
+    color: #FFF287 ; /* Accent color for active/hover */
+}
+/* --- Main Content Layout --- */
+main {
+    display: flex;
+    flex-grow: 1; /* Allows main content to fill remaining vertical space */
+    width: 100%; /* Ensures main takes full width of its parent (.container) */
+    /* background-color: transparent; Main content itself doesn't need a background here */
+    flex-direction: column;
+    padding-top: 100px;
+}
+
+/* --- Home Page Specific Styles --- */
+.home-page .home-main {
+    padding-top: 80px; /* Offset for fixed header */
+    width: 100vw;
+    box-sizing: border-box;
+    flex: 1 ;
+    margin-top: 20;
+    padding: 0; /* Include padding in width calculation */
+    filter: none; 
+}
+
+.main-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(6,18,43,255);
+    padding: 18px 40px 18px 40px;
+    position: relative;
+    z-index: 10;
+    box-shadow: none;
+}
+
+.main-navbar nav {
+    display: flex;
+    gap: 36px;
+}
+
+.main-navbar nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.08rem;
+    font-weight: 600;
+    padding-bottom: 4px;
+    border-bottom: 2.5px solid transparent;
+    transition: color 0.2s, border-bottom 0.2s;
+}
+
+.main-navbar nav a.active, .main-navbar nav a:hover {
+    color: #FFF287;
+    border-bottom: 2.5px solid #FFF287;
+  }
+
+.modern-hero {
+    padding-top: 150px; /* agar tidak tertutup navbar */
+    display: block;     /* ubah dari flex ke block */
+    min-height: auto;
+    background: none;
+    margin-top: 20px;
+  }
+
+/* background */
+/* .hero-bg {
+  background: linear-gradient(120deg, rgba(0,176,240,0.5), rgba(35,36,58,0.8)),
+              url('https://www.transparenttextures.com/patterns/cubes.png') repeat;
+  opacity: 1;
+  filter: brightness(0.9) contrast(1.05) saturate(1.2);
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+} */
+
+
+/* footer */
+.main-footer {
+    width: 100%;
+    text-align: center;
+    font-size: 0.98rem;
+    color: #b0b0b0;
+    background: #0f172a;
+    padding: 18px 0 10px 0;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    animation: fadeInSection 1.2s 1.5s forwards;
+    animation-fill-mode: forwards;
+    margin-top: 20px;
+  }
+.main-footer {
+    opacity: 0;
+    animation: fadeInSection 1.2s 1.5s forwards;
+}
+
+/* news section */
+
+.news-detail-section {
+    padding: 60px 10%;
+    color: #fff;
+    background: rgba(8, 60, 80, 0.96);
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    max-width: 1200px;
+    margin: auto;
+    box-sizing: border-box;
+  }
+  
+.news-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: transparent;
+        padding: 20px 0;
+        margin-bottom: 24px;
+        text-align: center;
+        z-index: auto;
+        position: relative;
+  }
+  
+  .news-title-detail {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  
+  .news-meta {
+    font-size: 0.95rem;
+    color: #ccc;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .news-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  .news-image-detail {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    object-fit: cover;
+    margin: 0 auto;
+    border-radius: 12px;
+    border: 2px solid #00b0f0;
+    box-shadow: 0 6px 24px rgba(0, 176, 240, 0.15);
+    display: block;
+  }
+  
+  
+  .news-article {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #eaeaea;
+    text-align: justify;
+    flex-wrap: pretty;
+  }
+  
+  .news-article p {
+    margin-bottom: 20px;
+  }
+  @keyframes fadeInSection {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

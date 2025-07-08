@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Map Advanced - Static SHP with Mapbox</title>
+    
+    <link rel="stylesheet" href="style.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAo9TfIEb3zVb8C8P7J/5wE8E+8b/vMvR5R02z7A=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-2eW7n1o8Nl+5z/7jT9UjU1+7zF6Y1L9B7/z1fF7T+8=" crossorigin=""></script>
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css" type="text/css" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+    <style>
+        /* Gaya dasar untuk layout aplikasi */
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-placeholder {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #555;
+        }
+        nav a.active {
+            font-weight: bold;
+            text-decoration: underline;
+            background-color: #007bff; /* Warna aktif untuk navigasi atas */
+        }
+        main {
+            display: flex;
+            flex: 1; /* Mengisi sisa ruang vertikal */
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1em;
+            color: #555;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .sidebar-item:hover {
+            background-color: #e9e9e9;
+        }
+        .active-sidebar-item {
+            font-weight: bold;
+            color: #333;
+            background-color: #e0e0e0;
+            border-left: 5px solid #007bff; /* Highlight item sidebar aktif */
+            padding-left: 10px;
+        }
+        .map-content {
+            flex: 1; /* Mengisi sisa ruang horizontal */
+            position: relative; /* Penting untuk posisi absolut panel peta */
+            background-color: #e2e2e2; /* Background fallback */
+        }
+        .map-view {
+            position: absolute; /* Setiap panel peta overlay satu sama lain */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column; /* Untuk menempatkan kontrol di atas peta */
+            overflow: hidden; /* Sembunyikan overflow dari peta yang di-resize */
+        }
+        .hidden-panel {
+            display: none !important;
+        }
+        /* Style untuk kontainer peta */
+        #mapCompareContainer, #mapContainerLeft {
+            flex: 1; /* Membuat peta mengisi sisa ruang di dalam panel */
+            width: 100%;
+            height: 100%; /* Penting untuk peta Mapbox/Leaflet agar terlihat */
+        }
+        /* Style khusus untuk peta Mapbox GL Compare */
+        #mapLeft, #mapRight {
+            width: 100%;
+            height: 100%; /* Peta Mapbox GL JS memerlukan tinggi eksplisit */
+            position: absolute; /* Penting untuk Mapbox GL Compare */
+            top: 0;
+            bottom: 0;
+        }
+        /* Style untuk kontrol pilihan basemap dan tahun GeoJSON */
+        .controls-container {
+            display: flex;
+            flex-direction: column; /* Kontrol Basemap di atas kontrol Tahun */
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10; /* Pastikan kontrol berada di atas peta */
+        }
+        .control-row {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 10px; /* Jarak antara baris kontrol */
+            gap: 20px; /* Jarak antara grup kontrol kiri dan kanan */
+        }
+        .control-group {
+            text-align: center;
+            flex: 1; /* Agar grup kontrol mengisi ruang secara merata */
+        }
+        .control-group h4 {
+            margin: 0 0 5px 0;
+            color: #555;
+            font-size: 1em;
+        }
+        .control-button {
+            padding: 6px 12px;
+            margin: 2px;
+            border: 1px solid #aaa;
+            background-color: #eee;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        .control-button.active, .control-button:hover {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        /* Style untuk pesan loading */
+        #loadingMessageAdmin { text-align: center; padding: 10px; color: #555; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-placeholder">WEB MAP APP</div>
+            <nav>
+                <a href="#">HOME</a>
+                <a href="#" class="active">MAPS</a>
+                <a href="#">RESTORATION</a>
+            </nav>
+        </header>
+        <main>
+            <aside class="sidebar">
+                <div id="adminBoundaryBtn" class="sidebar-item active-sidebar-item">ADMINISTRATIVE BOUNDARY</div>
+                <div id="landCoverBtn" class="sidebar-item">LAND COVER</div>
+                <div id="emissionBtn" class="sidebar-item">EMISSION</div>
+            </aside>
+            <section class="map-content">
+                <div id="adminBoundaryPanel" class="map-view">
+                    <div id="loadingMessageAdmin" style="display: none;">Memuat data batas administrasi...</div>
+                    <div id="mapContainerLeft" class="map-container"></div>
+                </div>
+
+                <div id="landCoverPanel" class="map-view hidden-panel">
+                    <div class="controls-container">
+                        <div class="control-row">
+                            <div class="control-group">
+                                <h4>Left Basemap</h4>
+                                <button class="control-button basemap-button" data-map-side="left" data-type="basemap" data-key="basemap1">Streets</button>
+                                <button class="control-button basemap-button" data-map-side="left" data-type="basemap" data-key="basemap2">Satellite</button>
+                                <button class="control-button basemap-button" data-map-side="left" data-type="basemap" data-key="basemap3">Outdoors</button>
+                                <button class="control-button basemap-button" data-map-side="left" data-type="basemap" data-key="basemap4">Light</button>
+                            </div>
+                            <div class="control-group">
+                                <h4>Right Basemap</h4>
+                                <button class="control-button basemap-button" data-map-side="right" data-type="basemap" data-key="basemap1">Streets</button>
+                                <button class="control-button basemap-button" data-map-side="right" data-type="basemap" data-key="basemap2">Satellite</button>
+                                <button class="control-button basemap-button" data-map-side="right" data-type="basemap" data-key="basemap3">Outdoors</button>
+                                <button class="control-button basemap-button" data-map-side="right" data-type="basemap" data-key="basemap4">Light</button>
+                            </div>
+                        </div>
+                        <div class="control-row">
+                            <div class="control-group">
+                                <h4>Left Data Year</h4>
+                                <button class="control-button year-button" data-map-side="left" data-type="geojson" data-key="year1_landcover">Year 1</button>
+                                <button class="control-button year-button" data-map-side="left" data-type="geojson" data-key="year2_landcover">Year 2</button>
+                                <button class="control-button year-button" data-map-side="left" data-type="geojson" data-key="year3_landcover">Year 3</button>
+                                <button class="control-button year-button" data-map-side="left" data-type="geojson" data-key="year4_landcover">Year 4</button>
+                            </div>
+                            <div class="control-group">
+                                <h4>Right Data Year</h4>
+                                <button class="control-button year-button" data-map-side="right" data-type="geojson" data-key="year1_landcover">Year 1</button>
+                                <button class="control-button year-button" data-map-side="right" data-type="geojson" data-key="year2_landcover">Year 2</button>
+                                <button class="control-button year-button" data-map-side="right" data-type="geojson" data-key="year3_landcover">Year 3</button>
+                                <button class="control-button year-button" data-map-side="right" data-type="geojson" data-key="year4_landcover">Year 4</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mapCompareContainer"> <div id="mapLeft" class="map"></div> <div id="mapRight" class="map"></div> </div>
+                </div>
+
+                <div id="emissionPanel" class="map-view hidden-panel">
+                    <h3 style="text-align:center; margin-top:20px;">Emission Data Panel</h3>
+                    <p style="text-align:center;">Konten untuk emisi akan ditampilkan di sini.</p>
+                    <div class="map-container"
+                        style="background-color:#e0e0e0; display:flex; align-items:center; justify-content:center;">
+                        (Placeholder untuk Peta Emisi)
+                    </div>
+                    <div class="legenda">LEGENDA EMISSION</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
+
+    <script>
+        // --- Bagian Leaflet untuk Administrative Boundary ---
+        let mapAdmin = null;
+        let currentShapefileLayer = null;
+        let isAdminBoundaryLoaded = false;
+        const staticAdminShpUrl = 'batas_area.zip'; // Pastikan ini ada dan bisa diakses
+
+        async function loadAndDisplayStaticSHP() {
+            if (!mapAdmin || isAdminBoundaryLoaded) return;
+            const loadingMessage = document.getElementById('loadingMessageAdmin');
+            loadingMessage.style.display = 'block';
+            try {
+                const response = await fetch(staticAdminShpUrl);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const buffer = await response.arrayBuffer();
+                const geojson = await shp(buffer); // Menggunakan shp.js untuk konversi ZIP ke GeoJSON
+                
+                // Hapus layer lama jika ada
+                if (currentShapefileLayer) mapAdmin.removeLayer(currentShapefileLayer);
+                
+                currentShapefileLayer = L.geoJSON(geojson, {
+                    onEachFeature: (feature, layer) => {
+                        if (feature.properties) {
+                            let popup = "<strong>Properti:</strong><ul>";
+                            for (let key in feature.properties) {
+                                popup += `<li><strong>${key}:</strong> ${feature.properties[key]}</li>`;
+                            }
+                            popup += "</ul>";
+                            layer.bindPopup(popup);
+                        }
+                    },
+                    style: { color: "#0033cc", weight: 2, opacity: 0.9, fillOpacity: 0.15, fillColor: "#3366ff" }
+                }).addTo(mapAdmin);
+                
+                const bounds = currentShapefileLayer.getBounds();
+                if (bounds.isValid()) {
+                    mapAdmin.fitBounds(bounds);
+                } else {
+                    mapAdmin.setView([0, 110], 4); // Fallback view
+                    console.warn("Invalid bounds for administrative boundary GeoJSON, using default view.");
+                }
+                isAdminBoundaryLoaded = true;
+                console.log("Administrative boundary SHP loaded and displayed.");
+            } catch (err) {
+                console.error("Gagal memuat SHP batas administrasi:", err);
+                alert("Gagal memuat shapefile batas administrasi. Periksa konsol untuk detail dan pastikan file 'batas_area.zip' tersedia dan server lokal berjalan.");
+            } finally {
+                loadingMessage.style.display = 'none';
+            }
+        }
+
+        function initAdminBoundaryMap() {
+            if (!mapAdmin) {
+                mapAdmin = L.map('mapContainerLeft').setView([0, 110], 4);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(mapAdmin);
+                loadAndDisplayStaticSHP();
+            }
+        }
+
+        // --- Bagian Mapbox GL JS untuk Land Cover Compare ---
+        let mapboxMapLeft, mapboxMapRight, mapboxCompareControl;
+
+        // **PENTING! Ganti dengan Mapbox Access Token Anda**
+        const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiZnVhZGFndXNzYWxpbSIsImEiOiJjbGcyZ2Q1ZXMwMHZ2M2RuMW9uOHZ0cDNoIn0.odEIHnmRUwKd2wUq_nBowQ';
+
+        // Contoh style basemap dari Mapbox. Anda bisa menggantinya.
+        const mapboxStyles = {
+            basemap1: 'mapbox://styles/mapbox/streets-v12',
+            basemap2: 'mapbox://styles/mapbox/satellite-streets-v12',
+            basemap3: 'mapbox://styles/mapbox/outdoors-v12',
+            basemap4: 'mapbox://styles/mapbox/light-v11'
+        };
+
+        // **Definisi untuk URL data GeoJSON lokal (pastikan file-file ini ada!)**
+        const geoJsonDataSources = {
+            year1_landcover: 'contoh.geojson',
+            year2_landcover: 'contoh2.geojson',
+            year3_landcover: 'contoh.geojson',
+            year4_landcover: 'contoh2.geojson'
+        };
+
+        // Variabel untuk menyimpan pilihan saat ini untuk setiap peta
+        let currentLeftBasemap = 'basemap1';     // Default basemap kiri
+        let currentRightBasemap = 'basemap2';    // Default basemap kanan
+        let currentLeftGeoJsonYear = 'year1_landcover'; // Default GeoJSON kiri
+        let currentRightGeoJsonYear = 'year2_landcover'; // Default GeoJSON kanan
+
+
+        function initLandCoverCompareMapWithMapbox() {
+            if (!MAPBOX_ACCESS_TOKEN || MAPBOX_ACCESS_TOKEN === 'GANTI_DENGAN_MAPBOX_ACCESS_TOKEN_ANDA') {
+                alert("PENTING: Harap masukkan Mapbox Access Token Anda di dalam kode JavaScript!");
+                console.error("Mapbox Access Token belum diatur.");
+                return;
+            }
+            mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+
+            // Hanya inisialisasi jika belum ada
+            if (!mapboxMapLeft && !mapboxMapRight) {
+                mapboxMapLeft = new mapboxgl.Map({
+                    container: 'mapLeft',
+                    style: mapboxStyles[currentLeftBasemap], // Gunakan default basemap
+                    center: [110, 0], // Center awal (Indonesia)
+                    zoom: 3
+                });
+
+                mapboxMapRight = new mapboxgl.Map({
+                    container: 'mapRight',
+                    style: mapboxStyles[currentRightBasemap], // Gunakan default basemap
+                    center: [110, 0], // Center awal (Indonesia)
+                    zoom: 3
+                });
+
+                mapboxCompareControl = new mapboxgl.Compare(mapboxMapLeft, mapboxMapRight, '#mapCompareContainer');
+
+                // Sinkronisasi gerakan peta
+                var LGL = {};
+                function mapSync() {
+                    if (LGL.syncing) {return;}
+                    LGL.syncing = true;
+                    if(this === mapboxMapLeft) mapboxMapRight.jumpTo({center: mapboxMapLeft.getCenter(), zoom: mapboxMapLeft.getZoom(), bearing: mapboxMapLeft.getBearing(), pitch: mapboxMapLeft.getPitch()});
+                    else mapboxMapLeft.jumpTo({center: mapboxMapRight.getCenter(), zoom: mapboxMapRight.getZoom(), bearing: mapboxMapRight.getBearing(), pitch: mapboxMapRight.getPitch()});
+                    LGL.syncing = false;
+                }
+                mapboxMapLeft.on('move', mapSync);
+                mapboxMapRight.on('move', mapSync);
+
+                console.log("Mapbox compare map initialized.");
+
+                // Panggil updateMapComparison setelah peta diinisialisasi dan style basemap dimuat
+                // Ini akan memuat GeoJSON awal ke peta
+                mapboxMapLeft.on('style.load', () => {
+                    console.log("Left map style loaded for the first time. Triggering initial GeoJSON load.");
+                    updateMapComparison(true); // Paksa muat ulang GeoJSON
+                });
+            }
+        }
+
+        // Fungsi utama untuk memperbarui kedua peta (basemap DAN GeoJSON)
+        // forceGeoJsonReload: boolean, jika true GeoJSON akan dimuat ulang bahkan jika basemap tidak berubah
+        function updateMapComparison(forceGeoJsonReload = false) {
+            if (!mapboxMapLeft || !mapboxMapRight) {
+                console.warn("Peta Mapbox belum diinisialisasi saat mencoba memperbarui perbandingan.");
+                return;
+            }
+
+            const newLeftBasemapUrl = mapboxStyles[currentLeftBasemap];
+            const newRightBasemapUrl = mapboxStyles[currentRightBasemap];
+
+            // Dapatkan ID style Mapbox dari URL untuk perbandingan yang lebih akurat
+            const getMapboxStyleIdFromUrl = (url) => {
+                if (!url) return null;
+                const parts = url.split('/');
+                return parts[parts.length - 1]; // Ambil bagian terakhir setelah mapbox://styles/mapbox/
+            };
+
+            const currentLeftStyleId = mapboxMapLeft.getStyle() ? mapboxMapLeft.getStyle().id : null;
+            const currentRightStyleId = mapboxMapRight.getStyle() ? mapboxMapRight.getStyle().id : null;
+            const newLeftStyleId = getMapboxStyleIdFromUrl(newLeftBasemapUrl);
+            const newRightStyleId = getMapboxStyleIdFromUrl(newRightBasemapUrl);
+
+            const basemapChanged = (currentLeftStyleId !== newLeftStyleId) || (currentRightStyleId !== newRightStyleId);
+            
+            let shouldReloadGeoJson = forceGeoJsonReload;
+
+            if (basemapChanged) {
+                console.log(`Setting new basemaps: Left - ${currentLeftBasemap} (${newLeftBasemapUrl}), Right - ${currentRightBasemap} (${newRightBasemapUrl})`);
+                mapboxMapLeft.setStyle(newLeftBasemapUrl);
+                mapboxMapRight.setStyle(newRightBasemapUrl);
+
+                // Gunakan .once() untuk memuat ulang GeoJSON setelah style baru dimuat.
+                // Kita hanya perlu event dari satu peta karena keduanya akan berubah gaya bersamaan.
+                mapboxMapLeft.once('style.load', () => {
+                    console.log(`Left map new basemap loaded, reloading GeoJSON for ${currentLeftGeoJsonYear} and ${currentRightGeoJsonYear}.`);
+                    compareShapefileData(currentLeftGeoJsonYear, currentRightGeoJsonYear);
+                });
+                // Setelah setStyle, GeoJSON akan di-handle oleh event style.load, jadi tidak perlu panggil lagi di sini
+                shouldReloadGeoJson = false; 
+            }
+
+            // Jika basemap tidak berubah TAPI pilihan GeoJSON berubah, muat ulang GeoJSON saja
+            // Logika ini hanya dieksekusi jika basemap TIDAK berubah (atau sudah selesai berubah)
+            // ATAU jika forceGeoJsonReload adalah true (untuk inisialisasi awal atau tombol data tahun)
+            if (shouldReloadGeoJson || (!basemapChanged && mapboxMapLeft.isStyleLoaded() && mapboxMapRight.isStyleLoaded())) {
+                // Periksa apakah kunci GeoJSON yang saat ini dimuat berbeda dari yang dipilih
+                // Kita akan menyimpan kunci GeoJSON terakhir yang dimuat pada objek peta itu sendiri
+                const lastLoadedLeftGeoJsonKey = mapboxMapLeft.__lastLoadedGeoJsonKey;
+                const lastLoadedRightGeoJsonKey = mapboxMapRight.__lastLoadedGeoJsonKey;
+
+                const leftGeoJsonDataSelectionChanged = (lastLoadedLeftGeoJsonKey !== currentLeftGeoJsonYear);
+                const rightGeoJsonDataSelectionChanged = (lastLoadedRightGeoJsonKey !== currentRightGeoJsonYear);
+                
+                // Reload GeoJSON jika dipaksa, atau jika pilihan GeoJSON benar-benar berubah
+                if (forceGeoJsonReload || leftGeoJsonDataSelectionChanged || rightGeoJsonDataSelectionChanged) {
+                    console.log(`Reloading GeoJSON data: Left - ${currentLeftGeoJsonYear}, Right - ${currentRightGeoJsonYear}`);
+                    compareShapefileData(currentLeftGeoJsonYear, currentRightGeoJsonYear);
+                    // Setelah dimuat, simpan kunci GeoJSON yang baru sebagai yang terakhir dimuat
+                    mapboxMapLeft.__lastLoadedGeoJsonKey = currentLeftGeoJsonYear;
+                    mapboxMapRight.__lastLoadedGeoJsonKey = currentRightGeoJsonYear;
+                } else {
+                    console.log("No need to reload GeoJSON. Data and basemap are already up-to-date for current selection.");
+                }
+            }
+        }
+
+
+        /**
+         * Fungsi asinkron untuk memuat dan menampilkan data GeoJSON di peta perbandingan.
+         * Ini akan mengambil data GeoJSON dari URL dan menambahkannya sebagai layer.
+         * @param {string} leftGeoJsonKey - Kunci dari `geoJsonDataSources` untuk GeoJSON peta kiri.
+         * @param {string} rightGeoJsonKey - Kunci dari `geoJsonDataSources` untuk GeoJSON peta kanan.
+         * @param {object} layerOptions - Opsi untuk layer Mapbox GL JS (misalnya, type, paint).
+         */
+        async function compareShapefileData(leftGeoJsonKey, rightGeoJsonKey, layerOptions = {}) {
+            if (!mapboxMapLeft || !mapboxMapRight) {
+                console.error("Maps are not initialized. Cannot load GeoJSON data.");
+                return;
+            }
+
+            const defaultLayerOptions = {
+                type: 'fill', // Default ke layer fill untuk poligon
+                paint: {
+                    // Gunakan warna solid untuk pengujian awal.
+                    // Setelah berhasil tampil, Anda bisa uncomment bagian 'match' untuk styling berdasarkan properti.
+                    'fill-color': '#FF00FF', // Warna magenta mencolok untuk debugging
+                    'fill-opacity': 0.7,
+                    'fill-outline-color': '#FFF'
+                    /*
+                    // Contoh styling berdasarkan properti 'name' di GeoJSON Anda
+                    'fill-color': [
+                        'match',
+                        ['get', 'name'], // Ganti 'name' dengan nama properti aktual di GeoJSON Anda
+                        'contoh', '#FF00FF', // Jika properti 'name' adalah 'contoh'
+                        'Indonesia', '#00FFFF', // Jika properti 'name' adalah 'Indonesia'
+                        'Australia', '#FFFF00', // Jika properti 'name' adalah 'Australia'
+                        '#FF0000' // Warna default merah jika tidak ada yang cocok
+                    ],
+                    'fill-opacity': 0.7,
+                    'fill-outline-color': '#FFF'
+                    */
+                }
+            };
+
+            const finalLayerOptions = { ...defaultLayerOptions, ...layerOptions };
+
+            // Fungsi helper untuk menambahkan/memperbarui layer GeoJSON di satu peta
+            const addOrUpdateGeoJsonLayerOnMap = async (map, geoJsonDataKey, sourceId, layerId, options) => {
+                const geoJsonUrl = geoJsonDataSources[geoJsonDataKey];
+
+                // Hapus layer yang ada sebelum sumbernya
+                if (map.getLayer(layerId)) {
+                    map.removeLayer(layerId);
+                }
+                // Hapus sumber yang ada
+                if (map.getSource(sourceId)) {
+                    map.removeSource(sourceId);
+                }
+
+                if (!geoJsonUrl) {
+                    console.warn(`GeoJSON URL untuk kunci '${geoJsonDataKey}' tidak didefinisikan atau kosong. Layer '${layerId}' tidak akan ditambahkan.`);
+                    return; // Hentikan jika tidak ada URL yang valid
+                }
+
+                try {
+                    // Ambil data GeoJSON dari URL
+                    const response = await fetch(geoJsonUrl);
+                    if (!response.ok) {
+                        throw new Error(`Gagal memuat GeoJSON dari ${geoJsonUrl}: HTTP ${response.status}`);
+                    }
+                    const geojsonData = await response.json();
+
+                    map.addSource(sourceId, {
+                        type: 'geojson',
+                        data: geojsonData // Gunakan objek JSON yang sudah diambil
+                    });
+
+                    map.addLayer({
+                        id: layerId,
+                        type: options.type,
+                        source: sourceId,
+                        paint: options.paint
+                    });
+                    console.log(`Layer GeoJSON '${layerId}' ditambahkan ke peta dari ${geoJsonUrl}.`);
+
+                    // Coba menyesuaikan tampilan peta ke batas GeoJSON jika ada fitur
+                    if (geojsonData && geojsonData.features && geojsonData.features.length > 0) {
+                        try {
+                            const bbox = turf.bbox(geojsonData); // Membutuhkan Turf.js
+                            if (bbox && bbox.length === 4 && bbox.every(coord => typeof coord === 'number' && !isNaN(coord))) {
+                                map.fitBounds(bbox, {
+                                    padding: 20, // Tambahkan padding di sekitar GeoJSON
+                                    maxZoom: 10, // Zoom maksimum untuk fitur kecil
+                                    duration: 1000 // Animasi halus
+                                });
+                                console.log(`Peta disesuaikan ke batas GeoJSON dari ${geoJsonUrl}.`);
+                            } else {
+                                console.warn(`Bbox tidak valid untuk GeoJSON dari ${geoJsonUrl}, melewati fitBounds.`);
+                            }
+                        } catch (turfError) {
+                            console.warn(`Error saat menghitung bbox dengan Turf.js untuk ${geoJsonUrl}:`, turfError);
+                        }
+                    } else {
+                        console.warn(`GeoJSON dari ${geoJsonUrl} tidak memiliki fitur atau kosong, melewati fitBounds.`);
+                    }
+
+                } catch (error) {
+                    console.error(`Error saat memuat atau menambahkan GeoJSON untuk kunci '${geoJsonDataKey}' dari ${geoJsonUrl}:`, error);
+                    alert(`Gagal memuat data untuk ${geoJsonDataKey}. Periksa konsol untuk detail.`);
+                    // Pastikan layer dihapus jika gagal memuat
+                    if (map.getLayer(layerId)) map.removeLayer(layerId);
+                    if (map.getSource(sourceId)) map.removeSource(sourceId);
+                }
+            };
+
+            // Panggil fungsi helper untuk kedua peta
+            addOrUpdateGeoJsonLayerOnMap(mapboxMapLeft, currentLeftGeoJsonYear, 'left-landcover-source', 'left-landcover-layer', finalLayerOptions);
+            addOrUpdateGeoJsonLayerOnMap(mapboxMapRight, currentRightGeoJsonYear, 'right-landcover-source', 'right-landcover-layer', finalLayerOptions);
+
+            console.log(`Pembaruan perbandingan GeoJSON Mapbox dipicu untuk: Data Kiri - ${leftGeoJsonKey}, Data Kanan - ${rightGeoJsonKey}`);
+        }
+
+        // --- Logika Panel Switching ---
+        function setActivePanel(panelId) {
+            const panels = ['adminBoundaryPanel', 'landCoverPanel', 'emissionPanel'];
+            const buttons = ['adminBoundaryBtn', 'landCoverBtn', 'emissionBtn'];
+
+            // Sembunyikan semua panel dan hapus kelas aktif dari semua tombol sidebar
+            panels.forEach(id => document.getElementById(id).classList.add('hidden-panel'));
+            buttons.forEach(id => document.getElementById(id).classList.remove('active-sidebar-item'));
+
+            // Tampilkan panel yang dipilih dan tandai tombol sidebar sebagai aktif
+            document.getElementById(panelId).classList.remove('hidden-panel');
+            document.getElementById(panelId.replace('Panel', 'Btn')).classList.add('active-sidebar-item');
+
+            if (panelId === 'adminBoundaryPanel') {
+                initAdminBoundaryMap();
+                if (mapAdmin) {
+                    mapAdmin.invalidateSize(); // Pastikan peta Leaflet di-resize dengan benar
+                }
+                // Hancurkan peta Mapbox GL JS jika tidak diperlukan untuk menghemat sumber daya
+                if (mapboxMapLeft) { mapboxMapLeft.remove(); mapboxMapLeft = null; }
+                if (mapboxMapRight) { mapboxMapRight.remove(); mapboxMapRight = null; }
+                if (mapboxCompareControl) { mapboxCompareControl.remove(); mapboxCompareControl = null; }
+            } else if (panelId === 'landCoverPanel') {
+                initLandCoverCompareMapWithMapbox(); // Inisialisasi peta Mapbox jika belum
+                // Perbarui status aktif tombol kontrol (basemap dan tahun GeoJSON)
+                updateControlButtonsActiveState();
+                // Berikan sedikit penundaan untuk memastikan container memiliki dimensi yang benar sebelum resize
+                setTimeout(() => {
+                    if (mapboxMapLeft) mapboxMapLeft.resize();
+                    if (mapboxMapRight) mapboxMapRight.resize();
+                }, 100);
+            } else if (panelId === 'emissionPanel') {
+                // Hancurkan peta Leaflet dan Mapbox GL JS jika tidak diperlukan
+                if (mapAdmin) { mapAdmin.remove(); mapAdmin = null; isAdminBoundaryLoaded = false; }
+                if (mapboxMapLeft) { mapboxMapLeft.remove(); mapboxMapLeft = null; }
+                if (mapboxMapRight) { mapboxMapRight.remove(); mapboxMapRight = null; }
+                if (mapboxCompareControl) { mapboxCompareControl.remove(); mapboxCompareControl = null; }
+            }
+        }
+
+        // Fungsi untuk menangani klik pada tombol pilihan (Basemap atau GeoJSON Year)
+        function handleControlSelection(event) {
+            const button = event.target;
+            const mapSide = button.dataset.mapSide; // 'left' atau 'right'
+            const controlType = button.dataset.type; // 'basemap' atau 'geojson'
+            const selectedKey = button.dataset.key; // e.g., 'basemap1' atau 'year1_landcover'
+
+            let basemapChangedFlag = false;
+            let geoJsonChangedFlag = false;
+
+            if (controlType === 'basemap') {
+                if (mapSide === 'left') {
+                    if (currentLeftBasemap !== selectedKey) {
+                        currentLeftBasemap = selectedKey;
+                        basemapChangedFlag = true;
+                    }
+                } else { // Sisi kanan
+                    if (currentRightBasemap !== selectedKey) {
+                        currentRightBasemap = selectedKey;
+                        basemapChangedFlag = true;
+                    }
+                }
+            } else if (controlType === 'geojson') {
+                if (mapSide === 'left') {
+                    if (currentLeftGeoJsonYear !== selectedKey) {
+                        currentLeftGeoJsonYear = selectedKey;
+                        geoJsonChangedFlag = true;
+                    }
+                } else { // Sisi kanan
+                    if (currentRightGeoJsonYear !== selectedKey) {
+                        currentRightGeoJsonYear = selectedKey;
+                        geoJsonChangedFlag = true;
+                    }
+                }
+            }
+
+            // Perbarui tampilan tombol aktif (kelas CSS)
+            updateControlButtonsActiveState();
+
+            // Panggil fungsi utama untuk memperbarui peta.
+            // Kita perlu memaksakan pemuatan ulang GeoJSON jika basemap tidak berubah tetapi GeoJSON data berubah.
+            // Jika basemap berubah, GeoJSON akan dimuat ulang oleh event 'style.load'
+            if (basemapChangedFlag || geoJsonChangedFlag) {
+                updateMapComparison(geoJsonChangedFlag); 
+            }
+        }
+
+        // Fungsi untuk memperbarui kelas 'active' pada tombol kontrol (untuk styling aktif/non-aktif)
+        function updateControlButtonsActiveState() {
+            // Untuk tombol Basemap
+            document.querySelectorAll('.basemap-button').forEach(btn => {
+                const mapSide = btn.dataset.mapSide;
+                const key = btn.dataset.key;
+                if ((mapSide === 'left' && key === currentLeftBasemap) ||
+                    (mapSide === 'right' && key === currentRightBasemap)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Untuk tombol Tahun GeoJSON
+            document.querySelectorAll('.year-button').forEach(btn => {
+                const mapSide = btn.dataset.mapSide;
+                const key = btn.dataset.key;
+                if ((mapSide === 'left' && key === currentLeftGeoJsonYear) ||
+                    (mapSide === 'right' && key === currentRightGeoJsonYear)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Melampirkan event listeners ke semua tombol kontrol (basemap dan tahun)
+        document.querySelectorAll('.control-button').forEach(button => {
+            button.addEventListener('click', handleControlSelection);
+        });
+
+        // Melampirkan event listeners ke tombol-tombol sidebar
+        document.getElementById('adminBoundaryBtn').addEventListener('click', () => setActivePanel('adminBoundaryPanel'));
+        document.getElementById('landCoverBtn').addEventListener('click', () => setActivePanel('landCoverPanel'));
+        document.getElementById('emissionBtn').addEventListener('click', () => setActivePanel('emissionPanel'));
+
+        // Panggil setActivePanel pertama kali saat DOM dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            setActivePanel('adminBoundaryPanel'); // Panel awal yang aktif
+        });
+
+    </script>
+</body>
+
+</html>
