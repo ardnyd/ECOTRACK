@@ -1,24 +1,23 @@
-# Emission Web Map
+# ECOTRACK
 
-Aplikasi web untuk menampilkan data emisi Indonesia dengan peta interaktif.
+WebGIS interaktif untuk menampilkan data tutupan lahan dan memantau restorasi di PT XYZ.
 
-## Perubahan Terbaru
 
-### Halaman Maps - Layout Baru
+### Halaman Maps
 
-Halaman maps telah diubah dari metode swipe/compare menjadi **satu peta dengan fitur checklist** untuk menampilkan data emisi.
+Halaman maps telah diubah dari metode swipe/compare menjadi **satu peta dengan fitur checklist** untuk menampilkan data tutupan lahan
 
 #### Fitur Baru:
 
 1. **Satu Peta Utama**: Menggunakan Mapbox GL JS dengan tampilan tunggal
 2. **Sidebar dengan Checklist**: 
-   - Emission 2018
-   - Emission 2019  
-   - Emission 2021
-   - Emission 2023
+   - Landcover 2018
+   - Landcover 2019  
+   - Landcover 2021
+   - Landcover 2023
 3. **Batas Administrasi**: Otomatis ditampilkan sebagai layer dasar
 4. **Legenda Dinamis**: Menampilkan informasi berdasarkan data yang dipilih
-5. **Popup Informasi**: Klik pada area untuk melihat detail data
+
 
 #### Struktur File yang Diubah:
 
@@ -30,17 +29,20 @@ Halaman maps telah diubah dari metode swipe/compare menjadi **satu peta dengan f
 
 1. Buka halaman maps
 2. Peta akan menampilkan batas administrasi secara otomatis
-3. Gunakan checklist di sidebar untuk menampilkan/menyembunyikan data emisi
-4. Klik pada area di peta untuk melihat detail data
-5. Legenda akan menampilkan informasi berdasarkan data yang aktif
+3. Gunakan checklist di sidebar untuk menampilkan/menyembunyikan data tutupan lahan
+4. Legenda akan menampilkan informasi berdasarkan data yang aktif
 
-#### Data Sources:
+### Halaman Dashboard
 
-- **Batas Administrasi**: `data/admin/batas_area.zip`
-- **Emission 2018**: `data/emisi/E18/E18.geojson`
-- **Emission 2019**: `data/emisi/E19/E19.geojson`
-- **Emission 2021**: `data/emisi/E21/E21.geojson`
-- **Emission 2023**: `data/emisi/E23/E23.geojson`
+Halaman dashboard dibuat dengan memasukkan embed code dari dashboard yang disusun melalui Power BI
+
+#### Cara Penggunaan:
+
+1. Buka halaman dashboard
+2. Klik data yang ingin ditampilkan
+3. Filter data sesuai dengan lokasi atau jenis informasi yang ingin ditampilkan
+4. Klik reset untuk menghapus filter
+5. Klik logo untuk kembali ke halaman utama dashboard
 
 ## Menjalankan Aplikasi
 
@@ -54,7 +56,6 @@ Halaman maps telah diubah dari metode swipe/compare menjadi **satu peta dengan f
 ## Teknologi yang Digunakan
 
 - **Mapbox GL JS**: Untuk rendering peta interaktif
-- **Leaflet**: Untuk komponen tambahan (shp.js)
 - **HTML5/CSS3**: Untuk layout dan styling
 - **JavaScript**: Untuk logika aplikasi
 
@@ -62,20 +63,18 @@ Halaman maps telah diubah dari metode swipe/compare menjadi **satu peta dengan f
 
 ```
 /
-├── index.html          # Halaman utama
-├── maps.html           # Halaman peta (sudah diubah)
-├── restoration.html    # Halaman restoration
+├── index.html               # Halaman utama
+├── maps.html                # Halaman peta tutupan lahan
+├── restoration.html         # Halaman pemantauan restorasi
 ├── css/
-│   ├── home.css        # Styling halaman utama
-│   └── maps.css        # Styling halaman peta (sudah diubah)
+│   ├── home.css             # Styling halaman utama
+│   └── maps.css             # Styling halaman peta interaktif
 ├── scripts/
-│   └── maps.js         # Logika peta (sudah diubah)
-└── data/               # Folder data (pastikan tersedia)
-    ├── admin/
-    │   └── batas_area.zip
-    └── emisi/
-        ├── E18/
-        ├── E19/
-        ├── E21/
-        └── E23/
-``` 
+│   └── maps.js              # Logika Layer Control dan pemanggilan GeoJSON
+└── data/
+    └── LC/                 # Folder Tutupan Lahan
+        ├── 2018/
+        ├── 2019/
+        ├── 2021/
+        └── 2023/
+
