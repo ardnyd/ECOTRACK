@@ -208,40 +208,14 @@ main {
     z-index: 2;
     width: 100%;
     max-width: 1200px;
+    height: auto;
     text-align: left;
     padding-left: 70px;
     margin-right: auto;
     align-items: flex-start;
-    gap:30px;
+    gap:55px;
 }
 
-
-/* .hero-content h1 {
-    font-size: 4.5em;
-    margin-bottom: 0;
-    color: #ffffff;
-    text-align: left;
-    /* gap: 5px; */
- */
-
-/* .launch-button {
-    display: inline-block;
-    padding: 12px 25px;
-    margin-top: 10px;
-    margin-left: 0;
-    background-color: transparent;
-    color: #00b0f0;
-    border: 2px solid #00b0f0;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.launch-button:hover {
-    background-color: #00b0f0;
-    color: #ffffff;
-} */
 
 /* News Section and Cards  */
 .news-section-wrapper {
@@ -258,8 +232,9 @@ main {
     animation: fadeInSection 1.2s cubic-bezier(0.23, 1, 0.32, 1) both;
     max-width: 1000px;
     box-sizing: border-box;
-    padding-bottom: 50px;
-    padding-left: 100px;
+    /* padding-bottom: 50px; */
+    padding: 50px;
+    /* padding-left: 100px; */
     justify-items: center;
     align-items: stretch;
 }
@@ -279,6 +254,7 @@ main {
     font-size: 1.2em;
     font-weight: 300;
     color: #fff;
+    padding: 50px;
 }
 
 
@@ -526,30 +502,6 @@ main {
     overflow: hidden;
 }
 
-/* .hero-bg {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') center center/cover no-repeat;
-    z-index: 1;
-    filter: brightness(0.55) blur(0.5px);
-} */
-
-/* .hero-section {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 70vh;
-} */
-
-/* .hero-content {
-    text-align: left;
-    margin-bottom: 30px;
-} */
-
 .hero-content h1 {
     font-size: 3.2rem;
     font-weight: 800;
@@ -561,24 +513,16 @@ main {
     text-shadow: 0 4px 24px rgba(0,0,0,0.18);
 }
 
-/* .hero-desc {
-    font-size: 1.18rem;
-    font-weight: 400;
-    color: #e0e0e0;
-    margin-bottom: 32px;
-    max-width: 600px;
-    align-items: flex-start;
-    line-height: 1.6;
-} */
 
 .launch-button {
     display: inline-block;
     background: linear-gradient(90deg, #00b0f0 0%, #0265a2 100%);
     color: #fff;
-     gap: 100px;
+    gap: 50px;
     font-size: 1.15rem;
     font-weight: 600;
-    padding: 16px 38px;
+    padding: 0;
+    margin-top: 20px;
     border-radius: 32px;
     border: 2px solid #00b0f0;
     box-shadow: 0 2px 16px rgba(0,176,240,0.13);
@@ -636,7 +580,7 @@ main {
         bottom: 4vh;
     }
     .hero-content h1 {
-        font-size: 2.1rem;
+        font-size: 2.5em;
     }
     .hero-desc {
         font-size: 1rem;
@@ -647,6 +591,37 @@ main {
         padding: 12px 22px;
     }
 }
+
+@media (max-width: 420px) {
+    .launch-button {
+        font-size: 0.85rem;
+        padding: 10px 16px;
+    }
+    .location-overlay {
+        font-size: 1rem;
+        top: 5%;
+        right: 3%;
+    }
+    .hero-content h1{
+        font-size: 2rem;
+    }
+    .rotating-text .text {
+        position: absolute;
+        width: 50vw;
+        font-size: 0.3rem;
+        opacity: 0;
+        transform: translateY(100%);
+        animation: rotateText 9s linear infinite;
+        margin-bottom: 100px;
+      }
+    .launch-button {
+        font-size: 0.7rem;
+        margin-top: 100px;
+        padding: 10px;
+        margin-bottom: 0;
+    }
+}
+
 
 @media (max-width: 600px) {
     .main-navbar {
@@ -666,15 +641,15 @@ main {
         bottom: 2vh;
     }
     .hero-content h1 {
-        font-size: 1.3rem;
+        font-size: 2.5rem;
     }
     .hero-desc {
         font-size: 0.95rem;
         max-width: 98vw;
     }
     .launch-button {
-        font-size: 0.95rem;
-        padding: 10px 12px;
+        font-size: 0.7rem;
+        padding: 10px;
     }
 }
 
@@ -724,16 +699,6 @@ main {
     color: #FFF287;
 }
 
-/* Hero background modern */
-/* .hero-bg.parallax {
-    background: linear-gradient(120deg, #00b0f0 0%, #23243a 100%), url('assets/images/hero-pattern.png') repeat;
-    opacity: 0.92;
-    filter: blur(1.5px) brightness(0.85) saturate(1.1);
-    transition: background 0.7s, filter 0.5s;
-    position: rlat;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 0;
-} */
 .hero-bg {
     background: linear-gradient(120deg, rgba(0,176,240,0.5), rgba(35,36,58,0.8)),
             url('https://www.transparenttextures.com/patterns/cubes.png') repeat;
@@ -763,13 +728,7 @@ main {
     100% { transform: translateY(-12px) scale(1.08); }
 }
 
-/* Tombol gradient animasi */
-/* .launch-button {
-    background: linear-gradient(90deg, #00b0f0 0%, #0077c2 100%);
-    background-size: 200% 200%;
-    animation: gradientMove 3s linear infinite;
-    box-shadow: 0 2px 16px rgba(0,176,240,0.13);
-} */
+
 .launch-button {
     display: inline-block;
     padding: 14px 28px;
@@ -825,6 +784,7 @@ main {
     justify-items: center;
     align-items: stretch;
     margin-bottom: 32px;
+    padding: 20px;
 }
 
 .stat-card {
@@ -864,6 +824,7 @@ main {
     gap: 25px;
     justify-items: center;
     align-items: stretch;
+    padding: 20px;
 }
 .feature-card {
     background: rgba(30, 34, 50, 0.82);
@@ -888,10 +849,44 @@ main {
     font-size: 20px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
     .stats-grid, .features-grid {
         grid-template-columns: 1fr 1fr;
     }
+    .hero-section{
+        max-width: 90vw;
+    }
+    .hero-content h1{
+        font-size: 2rem;
+    }
+    .rotating-text .text {
+        position: absolute;
+        width: 70vw;
+        font-size: 1.3rem;
+        opacity: 0;
+        transform: translateY(100%);
+        animation: rotateText 9s linear infinite;
+        margin-bottom: 100px;
+      }
+
+}
+@media (max-width: 1000px) {
+    .stats-grid, .features-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .hero-section{
+        max-width: 90vw;
+    }
+      .rotating-text .text {
+        position: absolute;
+        width: 70vw;
+        font-size: 1rem;
+        opacity: 0;
+        transform: translateY(100%);
+        animation: rotateText 9s linear infinite;
+        margin-bottom: 100px;
+      }
+
 }
 @media (max-width: 600px) {
     .stats-grid, .features-grid {
@@ -903,11 +898,13 @@ main {
         padding: 0 16px;
     }
     
-    .news-section-wrapper {
+    .news-section {
         /* width: 100%; */
-        max-width: 700px;
-        margin: 0 auto 25px auto;
-        padding: 0 16px;
+        max-width: 400px;
+        margin: auto;
+        margin-bottom: 50px;
+        padding: 30px;
+        padding-bottom: 50px;
     }
 }
 

@@ -57,9 +57,9 @@ let selectedLC2023Areas = {
 // =================================================================
 // KONFIGURASI DAN DATA
 // =================================================================
-const staticAdminShpUrl = 'data/admin/UMH.zip';
+const staticAdminShpUrl = 'public/data/admin/UMH.zip'
 const staticLCZipUrls = {
-    year1_LC: 'data/LC/LC-Riau-18.geojson'
+    year1_LC: 'public/data/LC/LC-Riau-18.geojson'
 };
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiZnVhZGFndXNzYWxpbSIsImEiOiJjbGcyZ2Q1ZXMwMHZ2M2RuMW9uOHZ0cDNoIn0.odEIHnmRUwKd2wUq_nBowQ';
 
@@ -68,39 +68,39 @@ const mapboxStyles = {
 };
 
 const lc2018AreaFiles = {
-    jambi: 'data/LC/2018/Jambi/Jambi-LC-18.geojson',
-    kalbar: 'data/LC/2018/Kalbar/Kalbar-LC-18.geojson',
-    kaltim: 'data/LC/2018/Kaltim/Kaltim-LC-18.geojson',
-    muba: 'data/LC/2018/Muba/Muba-LC-18.geojson',
-    oki: 'data/LC/2018/Oki/Oki-LC-18.geojson',
-    riau: 'data/LC/2018/Riau/riau18_simp.geojson'
+    jambi: 'public/data/LC/2018/Jambi/Jambi-LC-18.geojson',
+    kalbar: 'public/data/LC/2018/Kalbar/Kalbar-LC-18.geojson',
+    kaltim: 'public/data/LC/2018/Kaltim/Kaltim-LC-18.geojson',
+    muba: 'public/data/LC/2018/Muba/Muba-LC-18.geojson',
+    oki: 'public/data/LC/2018/Oki/Oki-LC-18.geojson',
+    riau: 'public/data/LC/2018/Riau/riau18_simp.geojson'
 };
 
 const lc2019AreaFiles = {
-    jambi: 'data/LC/2019/Jambi/Jambi-LC-19.geojson',
-    kalbar: 'data/LC/2019/Kalbar/Kalbar-LC-19.geojson',
-    kaltim: 'data/LC/2019/Kaltim/Kaltim-LC-19.geojson',
-    muba: 'data/LC/2019/Muba/Muba-LC-19.geojson',
-    oki: 'data/LC/2019/Oki/Oki-LC-19.geojson',
-    riau: 'data/LC/2019/Riau/riau19_simp.geojson'
+    jambi: 'public/data/LC/2019/Jambi/Jambi-LC-19.geojson',
+    kalbar: 'public/data/LC/2019/Kalbar/Kalbar-LC-19.geojson',
+    kaltim: 'public/data/LC/2019/Kaltim/Kaltim-LC-19.geojson',
+    muba: 'public/data/LC/2019/Muba/Muba-LC-19.geojson',
+    oki: 'public/data/LC/2019/Oki/Oki-LC-19.geojson',
+    riau: 'public/data/LC/2019/Riau/riau19_simp.geojson'
 };
 
 const lc2021AreaFiles = {
-    jambi: 'data/LC/2021/jambi21.geojson',
-    kalbar: 'data/LC/2021/kalbar21_simp.geojson',
-    kaltim: 'data/LC/2021/kaltim21.geojson',
-    muba: 'data/LC/2021/muba21.geojson',
-    oki: 'data/LC/2021/oki21_simp.geojson',
-    riau: 'data/LC/2021/riau21_simp.geojson'
+    jambi: 'public/data/LC/2021/jambi21.geojson',
+    kalbar: 'public/data/LC/2021/kalbar21_simp.geojson',
+    kaltim: 'public/data/LC/2021/kaltim21.geojson',
+    muba: 'public/data/LC/2021/muba21.geojson',
+    oki: 'public/data/LC/2021/oki21_simp.geojson',
+    riau: 'public/data/LC/2021/riau21_simp.geojson'
 };
 
 const lc2023AreaFiles = {
-    jambi: 'data/LC/2023/jambi23.geojson',
-    kalbar: 'data/LC/2023/kalbar23.geojson',
-    kaltim: 'data/LC/2023/kaltim23.geojson',
-    muba: 'data/LC/2023/muba23.geojson',
-    oki: 'data/LC/2023/oki23.geojson',
-    riau: 'data/LC/2023/riau23_simp.geojson'
+    jambi: 'public/data/LC/2023/jambi23.geojson',
+    kalbar: 'public/data/LC/2023/kalbar23.geojson',
+    kaltim: 'public/data/LC/2023/kaltim23.geojson',
+    muba: 'public/data/LC/2023/muba23.geojson',
+    oki: 'public/data/LC/2023/oki23.geojson',
+    riau: 'public/data/LC/2023/riau23_simp.geojson'
 };
 const LCYearLabels = {
     year1_LC: 'Land Cover 2018',

@@ -324,6 +324,7 @@ main {
 
     .map-content {
         height: calc(100vh - 150px);
+        width:fit-content
     }
 
     .LC-checklist {
