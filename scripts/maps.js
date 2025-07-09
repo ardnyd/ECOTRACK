@@ -68,10 +68,10 @@ const mapboxStyles = {
 };
 
 const lc2018AreaFiles = {
-    jambi: 'ata/LC/2018/Jambi/Jambi-LC-18.geojson',
-    kalbar: 'ata/LC/2018/Kalbar/Kalbar-LC-18.geojson',
+    jambi: 'data/LC/2018/Jambi/Jambi-LC-18.geojson',
+    kalbar: 'data/LC/2018/Kalbar/Kalbar-LC-18.geojson',
     kaltim: 'data/LC/2018/Kaltim/Kaltim-LC-18.geojson',
-    muba: 'data/LC/2018/Muba/Muba-LC-18.geojson',
+    muba: 'data/LC/2018/Muba/muba18.zip',
     oki: 'data/LC/2018/Oki/Oki-LC-18.geojson',
     riau: 'data/LC/2018/Riau/riau18_simp.geojson'
 };
